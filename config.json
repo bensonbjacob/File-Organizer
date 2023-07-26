@@ -1,18 +1,20 @@
 {
-    "target_directories": {
-        ".jpeg": "Images",
-        ".jpg": "Images",
-        ".png": "Images",
-        ".gif": "GIFs",
-        ".pdf": "PDFs",
-        ".docx": "Documents",
-        ".pages": "Documents",
-        ".xlsx": "Documents",
-        ".mp4": "Videos",
-        ".mov": "Videos"
-    },
-    "custom_rules": {
-      "resume": ["PDFs", "Resumes"]
-    }
-  }
-  
+  "target_directories": {
+    ".jpeg": "Images",
+    ".jpg": "Images",
+    ".png": "Images",
+    ".gif": "GIFs",
+    ".pdf": "Documents",
+    ".docx": "Documents",
+    ".pages": "Documents",
+    ".xlsx": "Documents",
+    ".mp4": "Videos",
+    ".mov": "Videos",
+    ".zip": "Archives"
+  },
+  "custom_rules": {
+    "resume": ["Documents", "Resumes"],
+    "screenshot": ["Images", "Screenshots"]
+  },
+  "ignore_folders": ["web_dev"]
+}

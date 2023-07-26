@@ -3,54 +3,54 @@ import shutil
 import json
 
 
-def load_configurations():
-    with open("config.json") as json_file:
-        data = json.load(json_file)
-        return data["target_directories"], data["custom_rules"]
+def load_config():
+    with open("config.json", "r") as config_file:
+        config = json.load(config_file)
+    return config
 
 
-def organize_files_on_desktop():
-    desktop_path = os.path.expanduser("~/Desktop")
+def organize_files_in_directory(directory, config, original_parent=None):
+    if original_parent is None:
+        original_parent = directory
 
-    # Load configurations from config.json
-    target_directories, custom_rules = load_configurations()
+    for item in os.listdir(directory):
+        item_path = os.path.join(directory, item)
 
-    for filename in os.listdir(desktop_path):
-        file_path = os.path.join(desktop_path, filename)
-        if os.path.isfile(file_path):
-            file_suffix = os.path.splitext(filename)[1].lower()
-            target_directory = target_directories.get(file_suffix, "Other")
-            target_directory_path = os.path.join(
-                desktop_path, target_directory)
+        if os.path.isdir(item_path):
+            if item in config["ignore_folders"]:
+                print(f"Ignoring files in the folder: {item_path}")
+                continue
 
-            # Create the target directory if it doesn't exist
-            if not os.path.exists(target_directory_path):
-                os.makedirs(target_directory_path)
+            organize_files_in_directory(item_path, config, original_parent)
 
-            # Check for custom categorization rules
-            for keyword, rule in custom_rules.items():
-                if keyword.lower() in filename.lower():
-                    custom_category, custom_subcategory = rule
-                    custom_directory_path = os.path.join(
-                        desktop_path, custom_category, custom_subcategory)
+        elif os.path.isfile(item_path):
+            custom_category = None
+            custom_subcategory = None
 
-                    # Create the custom subdirectory if it doesn't exist
-                    if not os.path.exists(custom_directory_path):
-                        os.makedirs(custom_directory_path)
-
-                    target_directory_path = custom_directory_path
+            for rule, target_folder in config["custom_rules"].items():
+                if rule.lower() in item.lower():
+                    custom_category, custom_subcategory = target_folder
                     break
 
-            # Check if the file already exists in the target directory
-            if os.path.exists(os.path.join(target_directory_path, filename)):
-                print(
-                    f"File '{filename}' already exists in the target directory. Skipping...")
+            if custom_category and custom_subcategory:
+                target_directory = os.path.join(
+                    original_parent, custom_category, custom_subcategory)
             else:
-                # Move the file to the target directory
-                shutil.move(file_path, os.path.join(
-                    target_directory_path, filename))
-                print(f"Moved '{filename}' to '{target_directory_path}'")
+                extension = os.path.splitext(item)[-1]
+                target_directory = os.path.join(
+                    original_parent, config["target_directories"].get(extension, "Other"))
+
+            os.makedirs(target_directory, exist_ok=True)
+
+            try:
+                shutil.move(item_path, os.path.join(target_directory, item))
+                print(f"Moved '{item}' to '{target_directory}'.")
+            except FileNotFoundError:
+                print(
+                    f"Error moving '{item}' to '{target_directory}'. File not found.")
 
 
 if __name__ == "__main__":
-    organize_files_on_desktop()
+    desktop_path = os.path.expanduser("~/Desktop")
+    config = load_config()
+    organize_files_in_directory(desktop_path, config)
