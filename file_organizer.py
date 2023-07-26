@@ -1,6 +1,7 @@
 import os
 import shutil
 import json
+import argparse
 
 
 def load_config():
@@ -9,7 +10,7 @@ def load_config():
     return config
 
 
-def organize_files_in_directory(directory, config, original_parent=None):
+def organize_files_in_directory(directory, config, organize_subdirectories=False, original_parent=None):
     if original_parent is None:
         original_parent = directory
 
@@ -17,11 +18,9 @@ def organize_files_in_directory(directory, config, original_parent=None):
         item_path = os.path.join(directory, item)
 
         if os.path.isdir(item_path):
-            if item in config["ignore_folders"]:
-                print(f"Ignoring files in the folder: {item_path}")
-                continue
-
-            organize_files_in_directory(item_path, config, original_parent)
+            if organize_subdirectories:
+                organize_files_in_directory(
+                    item_path, config, organize_subdirectories, original_parent)
 
         elif os.path.isfile(item_path):
             custom_category = None
@@ -51,6 +50,12 @@ def organize_files_in_directory(directory, config, original_parent=None):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--organize-sub", action="store_true",
+                        help="Organize files within subdirectories")
+    args = parser.parse_args()
+
     desktop_path = os.path.expanduser("~/Desktop")
     config = load_config()
-    organize_files_in_directory(desktop_path, config)
+    organize_files_in_directory(
+        desktop_path, config, args.organize_sub)
