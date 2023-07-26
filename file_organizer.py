@@ -18,6 +18,10 @@ def organize_files_in_directory(directory, config, organize_subdirectories=False
         item_path = os.path.join(directory, item)
 
         if os.path.isdir(item_path):
+            if item in config["ignore_folders"]:
+                print(f"Ignoring files in the folder: {item_path}")
+                continue
+
             if organize_subdirectories:
                 organize_files_in_directory(
                     item_path, config, organize_subdirectories, original_parent)
@@ -51,11 +55,19 @@ def organize_files_in_directory(directory, config, organize_subdirectories=False
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--organize-sub", action="store_true",
+    parser.add_argument("--organize-subdirectories", action="store_true",
                         help="Organize files within subdirectories")
     args = parser.parse_args()
 
     desktop_path = os.path.expanduser("~/Desktop")
+    downloads_path = os.path.expanduser("~/Downloads")
+
     config = load_config()
+
+    print("Organizing files on Desktop...")
     organize_files_in_directory(
-        desktop_path, config, args.organize_sub)
+        desktop_path, config, args.organize_subdirectories)
+
+    print("\nOrganizing files in Downloads...")
+    organize_files_in_directory(
+        downloads_path, config, args.organize_subdirectories)
