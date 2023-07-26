@@ -2,6 +2,7 @@ import os
 import shutil
 import json
 import argparse
+import datetime
 
 
 def load_config():
@@ -10,7 +11,7 @@ def load_config():
     return config
 
 
-def organize_files_in_directory(directory, config, organize_subdirectories=False, original_parent=None):
+def organize_files_in_directory(directory, config, backup_directory=None, organize_subdirectories=False, original_parent=None):
     if original_parent is None:
         original_parent = directory
 
@@ -24,7 +25,7 @@ def organize_files_in_directory(directory, config, organize_subdirectories=False
 
             if organize_subdirectories:
                 organize_files_in_directory(
-                    item_path, config, organize_subdirectories, original_parent)
+                    item_path, config, backup_directory, organize_subdirectories, original_parent)
 
         elif os.path.isfile(item_path):
             custom_category = None
@@ -46,6 +47,13 @@ def organize_files_in_directory(directory, config, organize_subdirectories=False
             os.makedirs(target_directory, exist_ok=True)
 
             try:
+                if backup_directory:
+                    backup_path = os.path.join(backup_directory, item)
+                    if not os.path.exists(backup_directory):
+                        os.makedirs(backup_directory)
+                    shutil.copy2(item_path, backup_path)
+                    print(f"Backed up '{item}' to '{backup_path}'.")
+
                 shutil.move(item_path, os.path.join(target_directory, item))
                 print(f"Moved '{item}' to '{target_directory}'.")
             except FileNotFoundError:
@@ -61,19 +69,23 @@ if __name__ == "__main__":
                         help="Organize files in Downloads")
     parser.add_argument("--sub", action="store_true",
                         help="Organize files within subdirectories")
+    parser.add_argument("--backup", action="store_true",
+                        help="Create a backup of the original files")
     args = parser.parse_args()
 
     desktop_path = os.path.expanduser("~/Desktop")
     downloads_path = os.path.expanduser("~/Downloads")
+    script_directory = os.path.dirname(os.path.abspath(__file__))
+    backup_directory = os.path.join(script_directory, "backup")
 
     config = load_config()
 
     if args.desktop:
         print("Organizing files on Desktop...")
         organize_files_in_directory(
-            desktop_path, config, args.sub)
+            desktop_path, config, backup_directory if args.backup else None, args.sub)
 
     if args.downloads:
         print("\nOrganizing files in Downloads...")
         organize_files_in_directory(
-            downloads_path, config, args.sub)
+            downloads_path, config, backup_directory if args.back else None, args.sub)
