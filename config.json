@@ -1,0 +1,18 @@
+{
+    "target_directories": {
+        ".jpeg": "Images",
+        ".jpg": "Images",
+        ".png": "Images",
+        ".gif": "GIFs",
+        ".pdf": "PDFs",
+        ".docx": "Documents",
+        ".pages": "Documents",
+        ".xlsx": "Documents",
+        ".mp4": "Videos",
+        ".mov": "Videos"
+    },
+    "custom_rules": {
+      "resume": ["PDFs", "Resumes"]
+    }
+  }
+  
