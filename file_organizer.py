@@ -55,7 +55,11 @@ def organize_files_in_directory(directory, config, organize_subdirectories=False
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--organize-subdirectories", action="store_true",
+    parser.add_argument("--desktop", action="store_true",
+                        help="Organize files on Desktop")
+    parser.add_argument("--downloads", action="store_true",
+                        help="Organize files in Downloads")
+    parser.add_argument("--sub", action="store_true",
                         help="Organize files within subdirectories")
     args = parser.parse_args()
 
@@ -64,10 +68,12 @@ if __name__ == "__main__":
 
     config = load_config()
 
-    print("Organizing files on Desktop...")
-    organize_files_in_directory(
-        desktop_path, config, args.organize_subdirectories)
+    if args.desktop:
+        print("Organizing files on Desktop...")
+        organize_files_in_directory(
+            desktop_path, config, args.sub)
 
-    print("\nOrganizing files in Downloads...")
-    organize_files_in_directory(
-        downloads_path, config, args.organize_subdirectories)
+    if args.downloads:
+        print("\nOrganizing files in Downloads...")
+        organize_files_in_directory(
+            downloads_path, config, args.sub)
