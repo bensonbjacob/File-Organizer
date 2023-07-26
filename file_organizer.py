@@ -88,4 +88,4 @@ if __name__ == "__main__":
     if args.downloads:
         print("\nOrganizing files in Downloads...")
         organize_files_in_directory(
-            downloads_path, config, backup_directory if args.back else None, args.sub)
+            downloads_path, config, backup_directory if args.backup else None, args.sub)
