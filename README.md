@@ -1,13 +1,13 @@
-# File Organizer
+# File Organizer Script
 
-This is a Python script that helps you organize your files on the Desktop and Downloads folder automatically. You can customize the organization rules by editing the `config.json` file.
+This is a Python script that helps you organize your files in the Desktop and Downloads folder automatically. You can customize the organization rules by editing the `config.json` file.
 
 ## Features
 
-- Organize files on the Desktop folder based on their file types into designated subfolders.
-- Optionally organize files within subdirectories on the Desktop folder.
+- Organize files in the Desktop folder based on their file types into designated subfolders.
+- Optionally organize files within subdirectories in the Desktop folder.
 - Organize files in the Downloads folder based on their file types into designated subfolders.
-- Ignore specified folders from being organized on both the Desktop and Downloads folder.
+- Ignore specified folders from being organized in both the Desktop and Downloads folder.
 
 ## Configuring the Organization Rules
 
