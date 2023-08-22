@@ -82,6 +82,8 @@ Example `config.json`:
 
 * The ```--sub``` option is optional and can be used to enable organizing files within subdirectories. If not specified, the script will only organize files in the top-level directory.
 
+* Adding the ```--backup``` argument will automatically create a backup of the files before moving them.
+
 * It is recommended to create a backup of your files before running the script, especially if you are using the ```--sub``` option, to avoid unintended consequences.
 
 * Please be cautious with the custom rules you define in the config.json file, as incorrect rules may cause files to be moved to unexpected locations.
